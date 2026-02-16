@@ -1,0 +1,56 @@
+---
+import Layout from '../layouts/Layout.astro';
+import data from '../data/tools.json';
+
+const { categories, tools } = data;
+
+function getToolCount(categoryId: string) {
+  return tools.filter(t => t.category === categoryId).length;
+}
+
+function getCategoryTools(categoryId: string) {
+  return tools.filter(t => t.category === categoryId).slice(0, 4);
+}
+
+function getPricingBadge(pricing: string) {
+  const badges: Record<string, string> = {
+    free: 'badge-free',
+    freemium: 'badge-freemium',
+    paid: 'badge-paid'
+  };
+  return badges[pricing] || 'badge-paid';
+}
+---
+
+<Layout title="All AI Tool Categories" description="Browse AI tools by category. Find the best tools for writing, coding, image generation, video, audio, and productivity.">
+  <div class="container" style="padding-top: 2rem;">
+    <header style="margin-bottom: 3rem;">
+      <h1 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem;">All Categories</h1>
+      <p style="color: #a1a1aa; font-size: 1.1rem;">Browse {tools.length} AI tools across {categories.length} categories</p>
+    </header>
+    
+    {categories.map(cat => (
+      <section style="margin-bottom: 3rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <h2 style="font-size: 1.5rem; font-weight: 600;">
+            <span style="margin-right: 0.5rem;">{cat.icon}</span>
+            {cat.name}
+          </h2>
+          <a href={`/category/${cat.id}`} style="font-size: 0.9rem;">View all {getToolCount(cat.id)} →</a>
+        </div>
+        
+        <div class="grid grid-3" style="grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));">
+          {getCategoryTools(cat.id).map(tool => (
+            <a href={`/tools/${tool.id}`} class="card" style="text-decoration: none; color: inherit; padding: 1.25rem;">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                <h3 style="font-size: 1rem; font-weight: 600; color: #f4f4f5;">{tool.name}</h3>
+                <span class={`badge ${getPricingBadge(tool.pricing)}`} style="font-size: 0.7rem;">{tool.pricing}</span>
+              </div>
+              <p style="color: #71717a; font-size: 0.8rem;">{tool.tagline}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+    ))}
+  </div>
+</Layout>

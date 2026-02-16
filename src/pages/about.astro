@@ -1,0 +1,56 @@
+---
+import Layout from '../layouts/Layout.astro';
+import data from '../data/tools.json';
+
+const toolCount = data.tools.length;
+const categoryCount = data.categories.length;
+---
+
+<Layout title="About AI Tools Directory" description="Learn about AI Tools Directory - a curated collection of the best AI tools, updated weekly.">
+  <div class="container" style="padding-top: 2rem; max-width: 800px;">
+    <header style="margin-bottom: 2rem;">
+      <h1 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem;">About This Directory</h1>
+    </header>
+    
+    <article class="card" style="padding: 2rem;">
+      <section style="margin-bottom: 2rem;">
+        <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">What is this?</h2>
+        <p style="color: #d4d4d8; line-height: 1.8; margin-bottom: 1rem;">
+          AI Tools Directory is a curated collection of the best AI tools available today. 
+          We currently track <strong>{toolCount} tools</strong> across <strong>{categoryCount} categories</strong>.
+        </p>
+        <p style="color: #d4d4d8; line-height: 1.8;">
+          Every tool is manually reviewed. We list real pros and cons, not marketing fluff. 
+          If a tool sucks, we'll tell you. If it's great, we'll tell you why.
+        </p>
+      </section>
+      
+      <section style="margin-bottom: 2rem;">
+        <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">How we make money</h2>
+        <p style="color: #d4d4d8; line-height: 1.8; margin-bottom: 1rem;">
+          Some tools have affiliate programs. When you click through and sign up, we may earn a commission. 
+          This doesn't affect our reviews or rankings — we recommend tools we'd actually use.
+        </p>
+        <p style="color: #d4d4d8; line-height: 1.8;">
+          We'll never recommend a bad tool just because they pay us. Trust is more valuable than a quick buck.
+        </p>
+      </section>
+      
+      <section style="margin-bottom: 2rem;">
+        <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">No tracking, no BS</h2>
+        <p style="color: #d4d4d8; line-height: 1.8;">
+          We don't use invasive tracking. No cookie banners. No newsletter popups. 
+          Just a clean directory that helps you find the right tool.
+        </p>
+      </section>
+      
+      <section>
+        <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Suggest a tool</h2>
+        <p style="color: #d4d4d8; line-height: 1.8;">
+          Know a great AI tool we're missing? We're always looking to add quality tools. 
+          Reach out and let us know.
+        </p>
+      </section>
+    </article>
+  </div>
+</Layout>

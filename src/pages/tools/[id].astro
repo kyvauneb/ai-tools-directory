@@ -1,0 +1,132 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import data from '../../data/tools.json';
+
+export function getStaticPaths() {
+  return data.tools.map(tool => ({
+    params: { id: tool.id },
+    props: { tool }
+  }));
+}
+
+const { tool } = Astro.props;
+const category = data.categories.find(c => c.id === tool.category);
+const relatedTools = data.tools.filter(t => t.category === tool.category && t.id !== tool.id).slice(0, 3);
+
+function getPricingBadge(pricing: string) {
+  const badges: Record<string, string> = {
+    free: 'badge-free',
+    freemium: 'badge-freemium',
+    paid: 'badge-paid'
+  };
+  return badges[pricing] || 'badge-paid';
+}
+
+const visitUrl = tool.affiliate && tool.affiliateUrl ? tool.affiliateUrl : tool.url;
+---
+
+<Layout title={`${tool.name} Review - AI ${category?.name} Tool`} description={tool.description}>
+  <div class="container" style="padding-top: 2rem;">
+    <nav style="margin-bottom: 1.5rem; font-size: 0.875rem; color: #71717a;">
+      <a href="/">Home</a> → <a href={`/category/${tool.category}`}>{category?.name}</a> → <span style="color: #a1a1aa;">{tool.name}</span>
+    </nav>
+    
+    <article>
+      <header style="margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem;">{tool.name}</h1>
+            <p style="color: #a1a1aa; font-size: 1.25rem;">{tool.tagline}</p>
+          </div>
+          <div style="text-align: right;">
+            <span class={`badge ${getPricingBadge(tool.pricing)}`} style="font-size: 0.875rem;">{tool.pricing}</span>
+            <p style="color: #71717a; margin-top: 0.5rem; font-size: 0.9rem;">{tool.priceNote}</p>
+          </div>
+        </div>
+      </header>
+      
+      <div style="display: grid; grid-template-columns: 1fr 300px; gap: 2rem;" class="tool-grid">
+        <div>
+          <!-- Description -->
+          <section class="card" style="margin-bottom: 1.5rem;">
+            <h2 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem;">Overview</h2>
+            <p style="color: #d4d4d8; line-height: 1.7;">{tool.description}</p>
+          </section>
+          
+          <!-- Features -->
+          <section class="card" style="margin-bottom: 1.5rem;">
+            <h2 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem;">Key Features</h2>
+            <ul style="list-style: none; display: grid; gap: 0.5rem;">
+              {tool.features.map((feature: string) => (
+                <li style="color: #d4d4d8; display: flex; align-items: center; gap: 0.5rem;">
+                  <span style="color: #22c55e;">✓</span> {feature}
+                </li>
+              ))}
+            </ul>
+          </section>
+          
+          <!-- Pros & Cons -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <section class="card">
+              <h2 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem; color: #22c55e;">Pros</h2>
+              <ul style="list-style: none; display: grid; gap: 0.5rem;">
+                {tool.pros.map((pro: string) => (
+                  <li style="color: #a1a1aa; font-size: 0.9rem;">+ {pro}</li>
+                ))}
+              </ul>
+            </section>
+            <section class="card">
+              <h2 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem; color: #ef4444;">Cons</h2>
+              <ul style="list-style: none; display: grid; gap: 0.5rem;">
+                {tool.cons.map((con: string) => (
+                  <li style="color: #a1a1aa; font-size: 0.9rem;">− {con}</li>
+                ))}
+              </ul>
+            </section>
+          </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <aside>
+          <div class="card" style="position: sticky; top: 100px;">
+            <a 
+              href={visitUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style="display: block; background: #3b82f6; color: white; text-align: center; padding: 0.875rem; border-radius: 8px; font-weight: 600; margin-bottom: 1rem; text-decoration: none;"
+            >
+              Visit {tool.name} →
+            </a>
+            
+            <div style="font-size: 0.875rem; color: #71717a;">
+              <p style="margin-bottom: 0.5rem;"><strong style="color: #a1a1aa;">Category:</strong> {category?.name}</p>
+              <p style="margin-bottom: 0.5rem;"><strong style="color: #a1a1aa;">Pricing:</strong> {tool.priceNote}</p>
+              <p><strong style="color: #a1a1aa;">Website:</strong> <a href={tool.url} target="_blank" rel="noopener">{tool.url.replace('https://', '')}</a></p>
+            </div>
+          </div>
+        </aside>
+      </div>
+      
+      <!-- Related Tools -->
+      {relatedTools.length > 0 && (
+        <section style="margin-top: 3rem;">
+          <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Similar Tools</h2>
+          <div class="grid grid-3">
+            {relatedTools.map(t => (
+              <a href={`/tools/${t.id}`} class="card" style="text-decoration: none; color: inherit;">
+                <h3 style="font-size: 1.125rem; font-weight: 600; color: #f4f4f5; margin-bottom: 0.25rem;">{t.name}</h3>
+                <p style="color: #71717a; font-size: 0.85rem;">{t.tagline}</p>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+    </article>
+  </div>
+  
+  <style>
+    @media (max-width: 768px) {
+      .tool-grid { grid-template-columns: 1fr !important; }
+    }
+  </style>
+</Layout>

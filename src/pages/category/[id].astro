@@ -1,0 +1,52 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import data from '../../data/tools.json';
+
+export function getStaticPaths() {
+  return data.categories.map(cat => ({
+    params: { id: cat.id },
+    props: { category: cat }
+  }));
+}
+
+const { id } = Astro.params;
+const { category } = Astro.props;
+const tools = data.tools.filter(t => t.category === id);
+
+function getPricingBadge(pricing: string) {
+  const badges: Record<string, string> = {
+    free: 'badge-free',
+    freemium: 'badge-freemium',
+    paid: 'badge-paid'
+  };
+  return badges[pricing] || 'badge-paid';
+}
+---
+
+<Layout title={`Best AI ${category.name} Tools`} description={category.description}>
+  <div class="container" style="padding-top: 2rem;">
+    <nav style="margin-bottom: 1.5rem; font-size: 0.875rem; color: #71717a;">
+      <a href="/">Home</a> → <a href="/categories">Categories</a> → <span style="color: #a1a1aa;">{category.name}</span>
+    </nav>
+    
+    <header style="margin-bottom: 2rem;">
+      <div style="font-size: 3rem; margin-bottom: 0.5rem;">{category.icon}</div>
+      <h1 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem;">{category.name}</h1>
+      <p style="color: #a1a1aa; font-size: 1.1rem;">{category.description}</p>
+      <p style="color: #71717a; margin-top: 0.5rem;">{tools.length} tools</p>
+    </header>
+    
+    <div class="grid grid-2">
+      {tools.map(tool => (
+        <a href={`/tools/${tool.id}`} class="card" style="text-decoration: none; color: inherit;">
+          <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.75rem;">
+            <h3 style="font-size: 1.25rem; font-weight: 600; color: #f4f4f5;">{tool.name}</h3>
+            <span class={`badge ${getPricingBadge(tool.pricing)}`}>{tool.pricing}</span>
+          </div>
+          <p style="color: #a1a1aa; font-size: 0.9rem; margin-bottom: 0.75rem;">{tool.tagline}</p>
+          <p style="color: #71717a; font-size: 0.8rem;">{tool.priceNote}</p>
+        </a>
+      ))}
+    </div>
+  </div>
+</Layout>

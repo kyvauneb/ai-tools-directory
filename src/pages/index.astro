@@ -1,0 +1,69 @@
+---
+import Layout from '../layouts/Layout.astro';
+import data from '../data/tools.json';
+
+const { categories, tools } = data;
+const featuredTools = tools.slice(0, 6);
+
+function getToolCount(categoryId: string) {
+  return tools.filter(t => t.category === categoryId).length;
+}
+
+function getPricingBadge(pricing: string) {
+  const badges: Record<string, string> = {
+    free: 'badge-free',
+    freemium: 'badge-freemium',
+    paid: 'badge-paid'
+  };
+  return badges[pricing] || 'badge-paid';
+}
+---
+
+<Layout title="Best AI Tools Directory 2025">
+  <div class="container">
+    <!-- Hero -->
+    <section style="text-align: center; padding: 4rem 0 3rem;">
+      <h1 style="font-size: 3rem; font-weight: 800; margin-bottom: 1rem; background: linear-gradient(135deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+        Find the Best AI Tools
+      </h1>
+      <p style="font-size: 1.25rem; color: #a1a1aa; max-width: 600px; margin: 0 auto;">
+        Curated directory of {tools.length}+ AI tools for writing, coding, design, video, and more. 
+        Updated weekly. No fluff.
+      </p>
+    </section>
+
+    <!-- Categories -->
+    <section style="margin-bottom: 4rem;">
+      <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1.5rem;">Browse by Category</h2>
+      <div class="grid grid-3">
+        {categories.map(cat => (
+          <a href={`/category/${cat.id}`} class="card" style="text-decoration: none; color: inherit;">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">{cat.icon}</div>
+            <h3 style="font-size: 1.125rem; font-weight: 600; color: #f4f4f5; margin-bottom: 0.25rem;">{cat.name}</h3>
+            <p style="color: #71717a; font-size: 0.875rem;">{getToolCount(cat.id)} tools</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Featured Tools -->
+    <section>
+      <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1.5rem;">Popular Tools</h2>
+      <div class="grid grid-2">
+        {featuredTools.map(tool => (
+          <a href={`/tools/${tool.id}`} class="card" style="text-decoration: none; color: inherit;">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.75rem;">
+              <h3 style="font-size: 1.25rem; font-weight: 600; color: #f4f4f5;">{tool.name}</h3>
+              <span class={`badge ${getPricingBadge(tool.pricing)}`}>{tool.pricing}</span>
+            </div>
+            <p style="color: #a1a1aa; font-size: 0.9rem; margin-bottom: 0.75rem;">{tool.tagline}</p>
+            <p style="color: #71717a; font-size: 0.8rem;">{tool.priceNote}</p>
+          </a>
+        ))}
+      </div>
+      <div style="text-align: center; margin-top: 2rem;">
+        <a href="/categories" style="color: #60a5fa; font-weight: 500;">View all {tools.length} tools →</a>
+      </div>
+    </section>
+  </div>
+</Layout>
